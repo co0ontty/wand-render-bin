@@ -101,6 +101,22 @@ async function main() {
       if (typeof artifact.size === "number" && actualSize !== artifact.size) {
         throw new Error(`${triple}: 尺寸与 manifest 不一致（${actualSize} != ${artifact.size}）`);
       }
+      let structured = null;
+      if (artifact.structured) {
+        const metadata = artifact.structured;
+        const filename = "wand-structured-renderd";
+        const binary = path.join(extractDir, triple, filename);
+        const expected = String(metadata.sha256 ?? "").toLowerCase();
+        if (!SHA256_PATTERN.test(expected) || !existsSync(binary)) {
+          throw new Error(`${triple}: structured binary or its sha256 is missing`);
+        }
+        const actual = sha256Of(binary);
+        const size = readFileSync(binary).length;
+        if (actual !== expected || size !== metadata.size || metadata.protocolVersion !== 2) {
+          throw new Error(`${triple}: structured binary integrity/protocol check failed`);
+        }
+        structured = { filename, binary, sha256: actual, size, protocolVersion: 2 };
+      }
 
       const targetDir = path.join(root, `v${options.version}`, triple);
       const target = path.join(targetDir, BINARY_NAME);
@@ -110,12 +126,32 @@ async function main() {
         + `${unchanged ? "（已一致）" : ""}${options.dryRun ? " [dry-run]" : ""}\n`,
       );
 
-      if (!options.dryRun && !unchanged) {
+      if (!options.dryRun) {
         mkdirSync(targetDir, { recursive: true });
-        copyFileSync(extracted, target);
-        chmodSync(target, 0o755);
-        writeFileSync(path.join(targetDir, `${BINARY_NAME}.version`), `${options.version}\n`);
-        writeFileSync(path.join(targetDir, `${BINARY_NAME}.sha256`), `${actualSha}  ${BINARY_NAME}\n`);
+        if (!unchanged) {
+          copyFileSync(extracted, target);
+          chmodSync(target, 0o755);
+        }
+        if (structured) {
+          const structuredTarget = path.join(targetDir, structured.filename);
+          if (!existsSync(structuredTarget) || sha256Of(structuredTarget) !== structured.sha256) {
+            copyFileSync(structured.binary, structuredTarget);
+            chmodSync(structuredTarget, 0o755);
+          }
+        }
+        // Repair missing sidecars, but leave matching files untouched so an
+        // identical sync does not create a spurious manifest/binary commit.
+        for (const [name, value] of [
+          [`${BINARY_NAME}.version`, `${options.version}\n`],
+          [`${BINARY_NAME}.sha256`, `${actualSha}  ${BINARY_NAME}\n`],
+          ...(structured ? [
+            [`${structured.filename}.version`, `${options.version}\n`],
+            [`${structured.filename}.sha256`, `${structured.sha256}  ${structured.filename}\n`],
+          ] : []),
+        ]) {
+          const sidecar = path.join(targetDir, name);
+          if (!existsSync(sidecar) || readFileSync(sidecar, "utf8") !== value) writeFileSync(sidecar, value);
+        }
       }
 
       staged.push({
@@ -124,6 +160,11 @@ async function main() {
         sha256: actualSha,
         size: actualSize,
         rustTarget: artifact.rustTarget,
+        ...(structured ? { structured: {
+          path: `v${options.version}/${triple}/${structured.filename}`,
+          sha256: structured.sha256, size: structured.size,
+          protocolVersion: structured.protocolVersion,
+        } } : {}),
       });
     }
 
@@ -132,6 +173,7 @@ async function main() {
       sha256: item.sha256,
       size: item.size,
       ...(item.rustTarget ? { rustTarget: item.rustTarget } : {}),
+      ...(item.structured ? { structured: item.structured } : {}),
     }]));
     // 保留既有版本里本次没同步的平台（先发 darwin、后补 linux 时不要把它们删掉）。
     for (const [triple, artifact] of Object.entries(previous?.triples ?? {})) {
