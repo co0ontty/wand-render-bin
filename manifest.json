@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "latest": "0.1.0",
+  "latest": "0.1.1",
   "versions": {
     "0.1.0": {
       "protocolVersion": 1,
@@ -11,6 +11,36 @@
           "sha256": "a8b46e0ed51802d1220434b033693eb900a32442631f60d5380001a71418dab4",
           "size": 837056,
           "rustTarget": "aarch64-apple-darwin"
+        }
+      }
+    },
+    "0.1.1": {
+      "protocolVersion": 1,
+      "minServerVersion": "4.73.0",
+      "triples": {
+        "darwin-arm64": {
+          "path": "v0.1.1/darwin-arm64/wand-render",
+          "sha256": "6855db8c0423d995dbd57567076cdf019a4e3306a465d0828cca80ee2f85f34c",
+          "size": 837056,
+          "rustTarget": "aarch64-apple-darwin"
+        },
+        "darwin-x64": {
+          "path": "v0.1.1/darwin-x64/wand-render",
+          "sha256": "783bd070dad27f2ec879ed5853f813f7ffdb3914d719d3ed947ec86af12a7b88",
+          "size": 891976,
+          "rustTarget": "x86_64-apple-darwin"
+        },
+        "linux-arm64": {
+          "path": "v0.1.1/linux-arm64/wand-render",
+          "sha256": "7acb6e92e8f049ac87d8159905115dabe5f9a33f9d310e3c98f38b798c4302e5",
+          "size": 987224,
+          "rustTarget": "aarch64-unknown-linux-musl"
+        },
+        "linux-x64": {
+          "path": "v0.1.1/linux-x64/wand-render",
+          "sha256": "7814590a02ae2606fedc395ee1708921aec3b16332edb46fa2369e43e9a589f5",
+          "size": 1094320,
+          "rustTarget": "x86_64-unknown-linux-musl"
         }
       }
     }
