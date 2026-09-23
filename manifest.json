@@ -1,5 +1,18 @@
 {
   "schemaVersion": 1,
-  "latest": null,
-  "versions": {}
+  "latest": "0.1.0",
+  "versions": {
+    "0.1.0": {
+      "protocolVersion": 1,
+      "minServerVersion": "4.73.0",
+      "triples": {
+        "darwin-arm64": {
+          "path": "v0.1.0/darwin-arm64/wand-render",
+          "sha256": "977e170a3c4fa7355fee25500aa622f3670ca8ed1a45b6ddb05fc4cd37f1515e",
+          "size": 820336,
+          "rustTarget": "aarch64-apple-darwin"
+        }
+      }
+    }
+  }
 }
