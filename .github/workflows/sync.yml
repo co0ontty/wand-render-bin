@@ -1,0 +1,46 @@
+name: Sync artifacts
+
+# 从 co0ontty/wand-render 的 Release 拉取各平台产物并提交到本仓库。
+#
+# 为什么是「拉」而不是「推」：跨仓库推送需要 PAT（GITHUB_TOKEN 只能写自己仓库），
+# 而拉取公开 Release 不需要凭据。所以本仓库用自己的 GITHUB_TOKEN 提交即可，零密钥。
+#
+# 用法：Actions → Sync artifacts → Run workflow → 填版本号（如 0.1.1）。
+# 想改成自动触发：在源仓库加一个带 PAT 的 repository_dispatch 步骤，或在源仓库 release
+# 工作流里推送本仓库（都需要 PAT）。当前刻意保持零密钥，代价是发版多一步手工触发。
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "要同步的版本（对应 wand-render 的 v<version> tag）"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync artifacts
+        run: node scripts/sync.mjs --version "${{ inputs.version }}"
+
+      - name: Prune old versions
+        # 只保留最近 3 个 minor 与 latest，控制仓库体积。
+        run: node scripts/prune.js --keep 3
+
+      - name: Commit and push
+        run: |
+          set -euo pipefail
+          git config user.name "wand-render-bin ci"
+          git config user.email "ci@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "no artifact changes"
+            exit 0
+          fi
+          git commit -m "Publish wand-render ${{ inputs.version }} artifacts"
+          git push
