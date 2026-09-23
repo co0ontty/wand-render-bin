@@ -1,0 +1,4 @@
+# 产物必须按二进制原样存取：任何行尾转换或 diff 都会破坏可执行文件。
+v*/*/wand-render -text -diff -merge
+v*/*/wand-render.exe -text -diff -merge
+manifest.json text eol=lf
