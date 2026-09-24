@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "latest": "0.1.1",
+  "latest": "0.1.3",
   "versions": {
     "0.1.0": {
       "protocolVersion": 1,
@@ -41,6 +41,60 @@
           "sha256": "7814590a02ae2606fedc395ee1708921aec3b16332edb46fa2369e43e9a589f5",
           "size": 1094320,
           "rustTarget": "x86_64-unknown-linux-musl"
+        }
+      }
+    },
+    "0.1.3": {
+      "protocolVersion": 1,
+      "minServerVersion": "4.73.0",
+      "triples": {
+        "darwin-arm64": {
+          "path": "v0.1.3/darwin-arm64/wand-render",
+          "sha256": "27b881febe0177ec8c610a0e3b2884c425434adfc79ecc40e938fd8a1e375de5",
+          "size": 870320,
+          "rustTarget": "aarch64-apple-darwin",
+          "structured": {
+            "path": "v0.1.3/darwin-arm64/wand-structured-renderd",
+            "sha256": "e0e940747fbe5af0da033763fdbb786c063443d3207aee4b2934e3fe98139776",
+            "size": 621168,
+            "protocolVersion": 2
+          }
+        },
+        "darwin-x64": {
+          "path": "v0.1.3/darwin-x64/wand-render",
+          "sha256": "1481b8f4688e5d0bfa2e6c1e4b41da288820fcfb43a737b027401e55334bedaf",
+          "size": 916792,
+          "rustTarget": "x86_64-apple-darwin",
+          "structured": {
+            "path": "v0.1.3/darwin-x64/wand-structured-renderd",
+            "sha256": "f67206b4d171f26172787e8184e684d61170c30646ab7d72a1f4232b737b4738",
+            "size": 649032,
+            "protocolVersion": 2
+          }
+        },
+        "linux-arm64": {
+          "path": "v0.1.3/linux-arm64/wand-render",
+          "sha256": "e51aee7fde515b0356c1a6919b66812ae4ff679f693847f61e816166e99d8805",
+          "size": 987224,
+          "rustTarget": "aarch64-unknown-linux-musl",
+          "structured": {
+            "path": "v0.1.3/linux-arm64/wand-structured-renderd",
+            "sha256": "af342aa8e7dcde0ce2563629921c9080131ed666ba743901ecfa22c31f04bb98",
+            "size": 725056,
+            "protocolVersion": 2
+          }
+        },
+        "linux-x64": {
+          "path": "v0.1.3/linux-x64/wand-render",
+          "sha256": "27c00887d03a24867f120a67852e5d0666cf7ddae18c3d708cbcca9c45a82427",
+          "size": 1118896,
+          "rustTarget": "x86_64-unknown-linux-musl",
+          "structured": {
+            "path": "v0.1.3/linux-x64/wand-structured-renderd",
+            "sha256": "52e1ec6dc79695c6af248b4b3bce160b3fb7be2c5f786172c78e13685c89ce39",
+            "size": 811664,
+            "protocolVersion": 2
+          }
         }
       }
     }
